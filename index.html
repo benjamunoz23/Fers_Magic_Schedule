@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fer's Magic">
+<meta name="theme-color" content="#FF69B4">
+<title>Fer's Magic Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFE4E1;
+    --bg-deep: #FFD9E8;
+    --fucsia: #FF1493;
+    --chicle: #FF69B4;
+    --white: #FFFFFF;
+    --gold: #FFD700;
+    --ink: #6E1F4E;
+    --ink-soft: #A24A82;
+    --green: #38C77E;
+    --blue: #DCEEFF;
+    --shadow: 0 18px 40px -18px rgba(190, 30, 110, 0.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,255,255,0.6) 0, transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(255,105,180,0.25) 0, transparent 45%),
+      linear-gradient(160deg, var(--bg) 0%, var(--bg-deep) 100%);
+    font-family:'Nunito', sans-serif;
+    color: var(--ink);
+    display:flex;
+    justify-content:center;
+    padding: 24px 12px 50px;
+  }
+  .app{ width:100%; max-width:430px; }
+  .card{
+    background:var(--white);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+    border: 1px solid rgba(255,105,180,0.25);
+  }
+  header{
+    position:relative;
+    padding: 26px 24px 22px;
+    background: linear-gradient(135deg, var(--fucsia), var(--chicle));
+    text-align:center;
+    overflow:hidden;
+  }
+  header::before{
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,0.35) 1.5px, transparent 1.5px);
+    background-size: 16px 16px; opacity:.5;
+  }
+  .sparkle{ position:absolute; color: rgba(255,255,255,0.85); font-size: 14px; animation: twinkle 2.4s ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{opacity:.25; transform:scale(.8);} 50%{opacity:1; transform:scale(1.15);} }
+  header h1{ position:relative; margin:4px 0 4px; font-family:'Quicksand', sans-serif; font-weight:700; font-size: 24px; color: var(--white); }
+  header p{ position:relative; margin:0; color: rgba(255,255,255,0.92); font-weight:600; font-size:14px; }
+  .crown-icon{ font-size:28px; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15)); }
+
+  .status{ display:flex; justify-content:space-between; align-items:center; padding: 13px 20px; background: #FFF1F6; border-bottom: 1px solid rgba(255,105,180,0.18); }
+  .points{ display:flex; align-items:center; gap:8px; font-family:'Quicksand', sans-serif; font-weight:700; font-size:16.5px; }
+  .level-badge{ background: var(--white); color: var(--fucsia); font-weight:700; font-size:12px; padding: 6px 11px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+
+  nav.tabs{ display:flex; padding: 10px 12px 0; gap:4px; overflow-x:auto; }
+  nav.tabs button{ flex:1; white-space:nowrap; border:none; background:transparent; padding: 9px 7px; font-family:'Quicksand', sans-serif; font-weight:700; font-size:12px; color: var(--ink-soft); border-radius: 14px 14px 0 0; cursor:pointer; }
+  nav.tabs button.active{ color: var(--fucsia); background: var(--bg); }
+
+  main{ padding: 20px 20px 24px; }
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* Contenedor del Avatar SVG Rediseñado */
+  .avatar-wrap{ display:flex; flex-direction:column; align-items:center; margin-bottom: 16px; }
+  .doll-card{
+    width: 210px; height: 290px;
+    background: radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FFF0F5 100%);
+    border: 2px dashed rgba(255,105,180,0.45);
+    border-radius: 28px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative;
+    box-shadow: inset 0 0 15px rgba(255,182,193,0.3);
+  }
+  .doll-card .badge{ position:absolute; top:-10px; right:-10px; background: var(--white); border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.12); font-size:16px; }
+
+  .avatar-svg { width: 160px; height: 250px; filter: drop-shadow(0 4px 8px rgba(255,105,180,0.25)); }
+
+  .outfit-badge-container { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+  .outfit-tag { background: #FFF0F6; border: 1px solid #FFD3E6; color: #B3186F; font-size: 11px; font-weight:700; padding: 3px 10px; border-radius: 12px; }
+
+  .class-card{ background: var(--white); border: 1.5px solid rgba(255,105,180,0.3); border-radius: 20px; padding: 16px; margin-bottom: 16px; position:relative; box-shadow: 0 8px 20px -14px rgba(190,30,110,.5); }
+  .class-card .tag{ position:absolute; top:-12px; left:16px; background: var(--fucsia); color:var(--white); font-size:11px; font-weight:700; padding: 5px 12px; border-radius: 999px; }
+  .class-card h3{ margin: 6px 0 8px; font-family:'Quicksand', sans-serif; font-size:17px; color: #B3186F; }
+  .class-card .meta{ display:flex; flex-wrap:wrap; gap:6px 10px; font-size:12.5px; color: var(--ink-soft); font-weight:600; margin-top: 2px; }
+  .class-card .empty{ font-size:14px; color: var(--ink-soft); font-weight:600; margin:6px 0 0; }
+
+  .checkin-btn{ width:100%; padding: 15px; border:none; border-radius: 18px; font-family:'Quicksand', sans-serif; font-weight:700; font-size: 17px; color: var(--white); background: linear-gradient(120deg, var(--fucsia), var(--chicle)); cursor:pointer; box-shadow: 0 10px 22px -8px rgba(255,20,147,0.55); }
+  .checkin-btn:active{ transform: scale(.97); }
+  .checkin-btn.done{ background: var(--green); box-shadow:none; cursor:default; }
+  .checkin-btn:disabled{ background: #F1B9D3; box-shadow:none; cursor:not-allowed; }
+
+  .toast{ margin-top: 12px; text-align:center; font-weight:700; color: #B3186F; font-size: 13.5px; min-height: 18px; }
+
+  table.sched{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.sched caption{ text-align:left; font-family:'Quicksand', sans-serif; font-weight:700; color:#B3186F; font-size:14px; margin-bottom:8px; }
+  table.sched th{ text-align:left; font-size:11px; color:var(--ink-soft); padding:6px 4px; border-bottom:2px solid var(--bg-deep); }
+  table.sched td{ padding:8px 4px; border-bottom:1px solid #FCE6EF; vertical-align:top; }
+  table.sched tr.today td{ background:#FFEFF6; }
+  .sched-day{ font-weight:700; color:#B3186F; font-family:'Quicksand', sans-serif; }
+  .sched-room{ display:block; color:var(--ink-soft); font-size:11px; margin-top:2px; }
+
+  .store-section{ margin-bottom:18px; }
+  .store-section h4{ font-family:'Quicksand', sans-serif; font-size:13.5px; color:#B3186F; margin:0 0 10px; }
+  .store-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .item{ background: #FFF6FA; border: 1.5px solid rgba(255,105,180,0.28); border-radius: 16px; padding: 12px 8px 14px; text-align:center; }
+  .item .emoji{ font-size: 30px; }
+  .item p{ margin: 5px 0 8px; font-weight:700; font-size: 12px; color: var(--ink); min-height:30px; display:flex; align-items:center; justify-content:center; }
+  .item button{ border:none; border-radius: 999px; padding: 6px 12px; font-weight:700; font-size: 11.5px; background: var(--white); color: var(--fucsia); border: 1.5px solid rgba(255,20,147,0.3); cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+  .item.owned button{ background: var(--green); color: var(--white); border-color: var(--green); cursor:pointer; }
+  .item.special button{ background: var(--fucsia); color: var(--white); border-color: var(--fucsia); }
+  .item.equipped{ outline: 2px solid var(--gold); }
+
+  .backup-box{ background:#FFF6FA; border:1.5px dashed rgba(255,105,180,0.4); border-radius:16px; padding:14px; margin-top:6px; }
+  .backup-box textarea{ width:100%; min-height:70px; font-size:11px; border-radius:10px; border:1px solid rgba(255,105,180,0.3); padding:8px; font-family:monospace; resize:vertical; }
+  .backup-box .row{ display:flex; gap:8px; margin-top:8px; }
+  .backup-box button{ flex:1; border:none; border-radius:12px; padding:9px; font-weight:700; font-size:12.5px; cursor:pointer; background:var(--white); color:var(--fucsia); border:1.5px solid rgba(255,20,147,0.3); }
+  .howto{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0 0 14px; }
+  .howto b{ color:var(--ink); }
+
+  .notif-box{ background:#FFF6FA; border:1.5px dashed rgba(255,105,180,0.4); border-radius:16px; padding:14px; margin-top:6px; margin-bottom:16px; }
+  .notif-box p.title{ margin:0 0 10px; font-weight:700; font-size:12.5px; color:var(--ink); }
+  .notif-btn{ width:100%; padding:12px; border:none; border-radius:14px; font-family:'Quicksand', sans-serif; font-weight:700; font-size:14px; color:var(--white); background:linear-gradient(120deg, var(--fucsia), var(--chicle)); cursor:pointer; box-shadow: 0 8px 18px -8px rgba(255,20,147,0.5); }
+  .notif-btn:disabled{ opacity:.7; cursor:default; box-shadow:none; }
+  .notif-status{ font-size:12px; color:var(--ink-soft); font-weight:700; margin:9px 0 0; min-height:14px; }
+  .warn-note{ font-size:11.3px; color:#B3186F; background:#FFE9F2; border-radius:10px; padding:9px 10px; margin:10px 0 0; line-height:1.55; }
+
+  .streak-box{ display:flex; align-items:center; justify-content:space-between; gap:8px; background:linear-gradient(120deg,#FFF0F6,#FFE3F0); border:1.5px solid rgba(255,105,180,0.3); border-radius:16px; padding:10px 14px; margin-bottom:14px; }
+  .streak-count{ font-family:'Quicksand', sans-serif; font-weight:700; font-size:14px; color:#B3186F; }
+  .streak-claim-btn{ display:none; align-items:center; gap:4px; border:none; border-radius:999px; padding:7px 12px; font-family:'Quicksand', sans-serif; font-weight:700; font-size:12px; color:var(--white); background:linear-gradient(120deg, var(--gold), #FFB020); cursor:pointer; box-shadow:0 6px 14px -6px rgba(255,176,32,0.6); }
+
+  .reminder-item.done .reminder-info strong{ text-decoration:line-through; opacity:0.55; }
+  .reminder-check{ border:none; background:#FFF0F6; color:var(--green); width:28px; height:28px; min-width:28px; border-radius:50%; font-weight:700; cursor:pointer; font-size:13px; }
+  .reminder-item.done .reminder-check{ background:var(--green); color:var(--white); }
+
+  .reminder-form{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .reminder-form input{ border:1.5px solid rgba(255,105,180,0.3); border-radius:12px; padding:10px 12px; font-family:'Nunito', sans-serif; font-size:13px; color:var(--ink); background:#FFF6FA; width:100%; }
+  .reminder-form input:focus{ outline:2px solid var(--chicle); }
+  .reminder-form label{ font-size:11px; font-weight:700; color:var(--ink-soft); margin-bottom:-4px; }
+  .reminder-add-btn{ border:none; border-radius:14px; padding:12px; font-family:'Quicksand', sans-serif; font-weight:700; font-size:14px; color:var(--white); background:linear-gradient(120deg, var(--fucsia), var(--chicle)); cursor:pointer; margin-top:4px; }
+  .reminders-list{ display:flex; flex-direction:column; gap:8px; }
+  .reminder-item{ display:flex; align-items:center; gap:10px; background:var(--white); border:1.5px solid rgba(255,105,180,0.25); border-radius:14px; padding:10px 12px; }
+  .reminder-info{ display:flex; flex-direction:column; flex:1; min-width:0; }
+  .reminder-info strong{ font-size:13px; color:var(--ink); overflow-wrap:break-word; }
+  .reminder-info span{ font-size:11px; color:var(--ink-soft); font-weight:700; margin-top:2px; }
+  .reminder-del{ border:none; background:#FFE9F2; color:var(--fucsia); width:28px; height:28px; min-width:28px; border-radius:50%; font-weight:700; cursor:pointer; font-size:13px; }
+  .reminder-past{ font-size:10px; color:#B0A0AE; font-weight:700; }
+  .remtoast{ text-align:center; font-weight:700; color:#B3186F; font-size:12.5px; min-height:16px; margin-top:2px; }
+
+  .gift-card{ background: linear-gradient(160deg, #FFF6FA, #FFE9F2); border: 1.5px solid rgba(255,105,180,0.35); border-radius: 22px; padding: 20px; text-align:center; }
+  .gift-card .gift-emoji{ font-size: 42px; margin-bottom: 8px; }
+  .gift-card h3{ font-family:'Quicksand', sans-serif; color:#B3186F; margin: 4px 0 8px; }
+  .gift-progress-track{ background:#FBD7E6; border-radius:999px; height:10px; overflow:hidden; margin: 12px 0 6px; }
+  .gift-progress-fill{ background: linear-gradient(120deg, var(--fucsia), var(--gold)); height:100%; border-radius:999px; transition: width .4s ease; }
+  .gift-progress-label{ font-size:11.5px; color:var(--ink-soft); font-weight:700; }
+  .gift-letter{ text-align:left; background: var(--white); border-radius:18px; padding:18px; margin-top:14px; box-shadow: 0 8px 20px -14px rgba(190,30,110,.5); }
+  .gift-letter p{ font-size: 13.5px; line-height:1.75; color: var(--ink); margin: 0 0 12px; }
+  .gift-letter p:last-child{ margin-bottom:0; }
+  .gift-signature{ text-align:right; font-family:'Quicksand', sans-serif; font-weight:700; color:#B3186F; font-style:italic; }
+
+  footer.reset{ text-align:center; margin-top: 16px; }
+  footer.reset button{ background:none; border:none; color: var(--ink-soft); font-size: 11.5px; text-decoration:underline; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <header>
+      <span class="sparkle" style="top:8px; left:16px; animation-delay:.2s;">✦</span>
+      <span class="sparkle" style="top:20px; right:24px; animation-delay:.9s;">✧</span>
+      <span class="sparkle" style="bottom:10px; left:36%; animation-delay:1.4s;">✦</span>
+      <div class="crown-icon">👑</div>
+      <h1 id="greetingTitle">¡Hola, mi princesa!</h1>
+      <p id="greetingSub">Te amo muchísimo, Fer 💖</p>
+    </header>
+
+    <div class="status">
+      <div class="points">👑 <span id="pointsValue">0</span> Monedas</div>
+      <div class="level-badge" id="levelBadge">Nivel: Princesa Aprendiz</div>
+    </div>
+
+    <nav class="tabs">
+      <button class="active" data-tab="home">Hoy</button>
+      <button data-tab="week">Horario</button>
+      <button data-tab="store">Boutique</button>
+      <button data-tab="reminders">Recordatorios</button>
+      <button data-tab="gift">Sorpresa</button>
+      <button data-tab="settings">Ajustes</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="view-home">
+        <div class="avatar-wrap">
+          <div class="doll-card">
+            <div class="badge">✨</div>
+
+            <!-- SVG Vectorial del Avatar Completo (rediseñado) -->
+            <svg class="avatar-svg" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sombra -->
+              <ellipse cx="100" cy="308" rx="42" ry="8" fill="#F0C2D4" opacity="0.6"/>
+
+              <!-- Pelo Largo Trasero -->
+              <path d="M 58 38 Q 100 6 142 38 Q 156 92 150 165 Q 146 222 130 244 Q 129 180 133 128 Q 135 70 121 44 Q 100 28 79 44 Q 65 70 67 128 Q 71 180 70 244 Q 54 222 50 165 Q 44 92 58 38 Z" fill="#2B2229"/>
+
+              <!-- Cuerpo base (piel) -->
+              <!-- Torso -->
+              <path d="M 68 96 Q 100 88 132 96 L 122 180 Q 100 188 78 180 Z" fill="#FEE0D2"/>
+              <!-- Brazos -->
+              <path d="M 62 98 Q 48 130 50 165 Q 51 178 58 182 Q 66 178 64 168 Q 60 135 76 102 Z" fill="#FEE0D2"/>
+              <path d="M 138 98 Q 152 130 150 165 Q 149 178 142 182 Q 134 178 136 168 Q 140 135 124 102 Z" fill="#FEE0D2"/>
+              <!-- Piernas -->
+              <rect x="80" y="178" width="17" height="118" rx="8.5" fill="#FEE0D2"/>
+              <rect x="103" y="178" width="17" height="118" rx="8.5" fill="#FEE0D2"/>
+              <!-- Cuello y cabeza -->
+              <rect x="90" y="78" width="20" height="24" rx="7" fill="#FEE0D2"/>
+              <ellipse cx="100" cy="56" rx="33" ry="31" fill="#FEE0D2"/>
+
+              <!-- Cara -->
+              <path d="M 80 46 Q 86 43 92 46" stroke="#C98B72" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.6"/>
+              <path d="M 108 46 Q 114 43 120 46" stroke="#C98B72" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.6"/>
+              <ellipse cx="86" cy="54" rx="4.2" ry="5.8" fill="#2C1A1D"/>
+              <ellipse cx="114" cy="54" rx="4.2" ry="5.8" fill="#2C1A1D"/>
+              <circle cx="87.5" cy="51.5" r="1.4" fill="#FFFFFF"/>
+              <circle cx="115.5" cy="51.5" r="1.4" fill="#FFFFFF"/>
+              <ellipse cx="78" cy="62" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.5"/>
+              <ellipse cx="122" cy="62" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.5"/>
+              <path id="moodMouth" d="M 93 68 Q 100 73 107 68" stroke="#D85A75" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+              <!-- Pelo frontal: chasquilla + mechones laterales (cubre toda la cabeza, sin claros) -->
+              <path d="M 66 74 Q 58 34 100 18 Q 142 34 134 74 Q 127 46 118 40 Q 109 52 100 42 Q 91 52 82 40 Q 73 46 66 74 Z" fill="#2B2229"/>
+              <path d="M 66 74 Q 57 102 61 138 Q 67 141 71 130 Q 69 100 75 76 Z" fill="#2B2229"/>
+              <path d="M 134 74 Q 143 102 139 138 Q 133 141 129 130 Q 131 100 125 76 Z" fill="#2B2229"/>
+              <path d="M 90 24 Q 93 34 90 44" stroke="#453842" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+              <path d="M 112 24 Q 109 34 112 44" stroke="#453842" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+
+              <!-- CAPAS DE VESTIMENTA DINÁMICAS (SVG) -->
+              <!-- Ropa Parte Inferior / Faldas / Jeans -->
+              <g id="svgBottom"></g>
+
+              <!-- Ropa Parte Superior / Vestidos -->
+              <g id="svgTop">
+                <!-- Vestido Predeterminado Princesa -->
+                <path d="M 68 96 Q 100 90 132 96 L 148 208 Q 100 220 52 208 Z" fill="#FF69B4"/>
+                <path d="M 78 96 L 83 118 L 117 118 L 122 96 Z" fill="#FF1493" opacity="0.4"/>
+                <circle cx="100" cy="108" r="4" fill="#FFD700"/>
+              </g>
+
+              <!-- Zapatos -->
+              <g id="svgShoes">
+                <!-- Zapatitos Predeterminados -->
+                <ellipse cx="88.5" cy="298" rx="11" ry="7" fill="#FF1493"/>
+                <ellipse cx="111.5" cy="298" rx="11" ry="7" fill="#FF1493"/>
+                <rect x="81" y="291" width="15" height="4.5" rx="2.2" fill="#FFFFFF"/>
+                <rect x="104" y="291" width="15" height="4.5" rx="2.2" fill="#FFFFFF"/>
+              </g>
+
+              <!-- Accesorios -->
+              <g id="svgAccessory">
+                <!-- Lazo Predeterminado -->
+                <path d="M 110 26 Q 118 18 126 26 Q 118 32 110 26 Z" fill="#FF1493"/>
+                <path d="M 126 26 Q 134 18 142 26 Q 134 32 126 26 Z" fill="#FF1493"/>
+                <circle cx="126" cy="26" r="3.3" fill="#FFD700"/>
+              </g>
+
+              <!-- Mascota (Luna) -->
+              <g id="svgPet"></g>
+
+              <!-- Efectos de ánimo (Tamagotchi): corazones, lágrima o Zzz, según el estado del día -->
+              <g id="moodFx"></g>
+            </svg>
+          </div>
+
+          <div class="outfit-badge-container" id="outfitBadges">
+            <span class="outfit-tag" id="tagAcc">🎀 Lazo</span>
+            <span class="outfit-tag" id="tagTop">👗 Vestido Rosa</span>
+            <span class="outfit-tag" id="tagShoes">👟 Zapatitos</span>
+            <span class="outfit-tag" id="tagPet" style="display:none;">🐾 Luna</span>
+          </div>
+        </div>
+
+        <div class="streak-box">
+          <span class="streak-count" id="streakCount">🔥 Racha: 0 días</span>
+          <button class="streak-claim-btn" id="streakClaimBtn">🎁 Reclamar premio</button>
+        </div>
+
+        <div class="class-card">
+          <span class="tag" id="classTag">Próxima clase</span>
+          <h3 id="className">Sin clases por ahora</h3>
+          <div class="meta" id="classMeta"></div>
+          <p class="empty" id="classEmpty" style="display:none;">Hoy no tienes más clases, ¡a descansar mi amor! 💗</p>
+        </div>
+
+        <button class="checkin-btn" id="checkinBtn">¡LLEGUÉ! 📍</button>
+        <div class="toast" id="toast"></div>
+      </section>
+
+      <section class="view" id="view-week">
+        <table class="sched">
+          <caption>Horario VI semestre 2026</caption>
+          <thead><tr><th>Día</th><th>Hora</th><th>Ramo</th></tr></thead>
+          <tbody id="weekBody"></tbody>
+        </table>
+      </section>
+
+      <section class="view" id="view-store">
+        <div id="storeContainer"></div>
+      </section>
+
+      <section class="view" id="view-reminders">
+        <div class="reminder-form">
+          <label for="remTitle">Título</label>
+          <input type="text" id="remTitle" placeholder="Ej: Entregar avance de práctica" maxlength="60">
+          <label for="remDate">Fecha</label>
+          <input type="date" id="remDate">
+          <label for="remTime">Hora</label>
+          <input type="time" id="remTime">
+          <button class="reminder-add-btn" id="addReminderBtn">💌 Agregar recordatorio</button>
+          <div class="remtoast" id="remToast"></div>
+        </div>
+        <div class="reminders-list" id="remindersList"></div>
+      </section>
+
+      <section class="view" id="view-gift">
+        <div id="giftContainer"></div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <p class="howto">
+          <b>Para dejarla como app en el iPhone de Fer:</b><br>
+          1. Abre el link en <b>Safari</b> (no funciona igual en Chrome).<br>
+          2. Toca el botón de compartir <b>⬆️</b>.<br>
+          3. Elige <b>"Agregar a pantalla de inicio"</b>.<br>
+          Así le queda un ícono propio y se abre a pantalla completa, sin la barra del navegador.
+        </p>
+
+        <div class="notif-box">
+          <p class="title">🔔 Avisos de clases y recordatorios</p>
+          <button class="notif-btn" id="notifBtn">Activar notificaciones</button>
+          <p class="notif-status" id="notifStatus"></p>
+          <p class="warn-note">⚠️ <b>Importante:</b> estos avisos son notificaciones locales del navegador — funcionan mientras la app está abierta (o se minimizó hace poco). iOS no permite que una app web avise si lleva mucho rato completamente cerrada, a menos que tenga un servidor propio enviando el aviso (push real). Para que le lleguen bien: que abra la app en la mañana y la deje como pestaña activa, o que la revise cada 1-2 horas durante el día.</p>
+        </div>
+
+        <p class="howto">
+          <b>Sobre el progreso:</b> se guarda solo, automáticamente, en ese iPhone. Si borra datos de Safari o usa modo privado, se pierde — por eso puedes generar un código de respaldo aquí abajo y guardarlo en Notas.
+        </p>
+        <div class="backup-box">
+          <p style="margin:0 0 8px; font-weight:700; font-size:12.5px;">Respaldo de progreso</p>
+          <textarea id="backupText" placeholder="Aquí aparece tu código de respaldo..."></textarea>
+          <div class="row">
+            <button id="genBackupBtn">Generar código</button>
+            <button id="restoreBackupBtn">Restaurar desde código</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="reset">
+        <button id="resetBtn">Reiniciar progreso</button>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- Horario real (VI semestre 2026) ----------
+  const SCHEDULE = {
+    1: [
+      {name:"Taller: Práctica pedagógica en nivel transición", start:"11:55", end:"14:10", room:"Sala D-002", prof:"Lilian Villablanca"},
+      {name:"Evaluación de los aprendizajes", start:"15:35", end:"18:55", room:"Sala i-108", prof:"Omaira Golcheidt"},
+    ],
+    2: [
+      {name:"Familia y comunidad educativa", start:"08:30", end:"10:35", room:"Sala D-102", prof:"Francisca Muñoz"},
+      {name:"Enfoques y métodos de enseñanza-aprendizaje del idioma inglés I", start:"10:50", end:"12:55", room:"", prof:"Marcela Campos"},
+    ],
+    3: [
+      {name:"Práctica pedagógica Nivel transición", start:"08:30", end:"10:35", room:"No requiere sala", prof:""},
+      {name:"Enfoques y métodos de enseñanza-aprendizaje del idioma inglés I", start:"11:55", end:"14:10", room:"Sala i-120", prof:"Mónica Valdés"},
+      {name:"Ética Cristiana", start:"14:30", end:"16:35", room:"Sala i-107", prof:""},
+    ],
+    4: [
+      {name:"Práctica pedagógica Nivel transición", start:"08:30", end:"12:55", room:"No requiere sala", prof:""},
+      {name:"Metodologías de la investigación", start:"14:30", end:"16:35", room:"Sala F-309", prof:"Fraño Paukner"},
+    ],
+    5: [
+      {name:"Enseñanza aprendizaje de las artes", start:"08:30", end:"10:35", room:"Sala A-102", prof:"Constanza Pérez"},
+      {name:"Diversidad e inclusión en la educación parvularia", start:"10:50", end:"12:55", room:"Sala A-102", prof:"Francisca Muñoz"},
+    ],
+  };
+  const DAY_NAMES = {1:"Lunes",2:"Martes",3:"Miércoles",4:"Jueves",5:"Viernes"};
+
+  const MORNING_MSGS = ["¡Buenos días mi princesa hermosa! Te amo", "Arriba, futura educadora favorita del mundo 💕", "Hoy también vas a brillar, mi amor"];
+  const AFTERNOON_MSGS = ["¡Tú puedes con todo hoy, mi niña!", "Vas increíble, sigue así princesa", "Un ratito más y ya terminas, te amo"];
+  const EVENING_MSGS = ["Eres la mejor futura educadora, te amo princesa", "Descansa hermosa, hiciste un gran trabajo hoy", "Mañana será otro día mágico, mi amor"];
+
+  // ---------- Mensajes personalizados para notificaciones de clase ----------
+  // Edita libremente estas frases (o agrega más al arreglo para que se elijan al azar).
+  // Placeholders disponibles: {class} = nombre del ramo, {room} = sala.
+  const HOUR_BEFORE_MSGS = [
+    "Princesa, en 1 hora tienes clase de {class} en {room}. Prepárate con calma, ¡tú puedes! ✨"
+  ];
+  const FIVE_MIN_MSGS = [
+    "¡Llegó la hora, mi amor! Entra a la sala y presiona el botón para ganar tus monedas de hoy 👑"
+  ];
+  function fillTemplate(tpl, c){
+    return tpl.replace("{class}", c.name).replace("{room}", c.room || "tu sala de siempre");
+  }
+  function pickMsg(arr, c){
+    const tpl = arr[Math.floor(Math.random()*arr.length)];
+    return fillTemplate(tpl, c);
+  }
+
+  // ---------- Racha de Amor ----------
+  // Cada 5 días de racha se desbloquea este premio. Edita el texto cuando quieras.
+  const STREAK_REWARD_MSG = "🎁 ¡Racha de {n} días! Vale por un masaje de tu novio 💆‍♀️ (+150 monedas de regalo)";
+  const STREAK_MILESTONE = 5;
+
+  // ---------- Regalo Secreto ----------
+  // Se desbloquea automáticamente cuando el número TOTAL de check-ins acumulados
+  // (histórico, de por vida) alcanza el umbral. Edita el umbral y el texto de la
+  // carta libremente — es 100% tuya, escríbela con tus propias palabras.
+  const SECRET_GIFT_THRESHOLD = 30; // total de asistencias marcadas para desbloquear
+  const SECRET_GIFT_TITLE = "Para ti, mi princesa";
+  // Escribe aquí tu propia carta (puedes usar varios párrafos separados por \n\n).
+  // Se deja un texto de ejemplo para que veas el formato; reemplázalo por el tuyo.
+  const SECRET_GIFT_LETTER = [
+    "Fer, esto que lees no es un mensaje más de la app: es la prueba de que cada mañana que te levantaste, cada clase a la que llegaste a tiempo, cada recordatorio que marcaste como hecho, sumó para algo mucho más grande que puntos y monedas.",
+    "Quiero que sepas que admiro profundamente tu constancia. No es fácil sostener la disciplina día tras día, y tú lo haces mientras además sueñas en grande con ser una gran educadora. Eso me llena de orgullo.",
+    "Si alguna vez sientes que nadie nota el esfuerzo silencioso de despertarte temprano o de organizar tu semana, quiero que esta carta te recuerde que yo sí lo veo, y que cada uno de esos días cuenta para mí.",
+    "Gracias por dejarme acompañarte en este camino, aunque sea desde una app hecha con cariño. Te amo muchísimo, y esto recién empieza."
+  ];
+  const SECRET_GIFT_SIGNATURE = "— Tu novio, que te admira cada día";
+
+  const STORE_CATALOG = [
+    { section:"Colección Hello Kitty & Sanrio", items:[
+      {id:"bow", emoji:"🎀", name:"Lazo clásico rojo", cost:300, slot:"accessory"},
+      {id:"poleron", emoji:"🧥", name:"Polerón Hello Kitty", cost:600, slot:"top"},
+      {id:"mochila", emoji:"🎒", name:"Mochila Kuromi", cost:350, slot:"accessory"},
+      {id:"zap-sanrio", emoji:"👟", name:"Zapatillas Sanrio", cost:400, slot:"shoes"},
+    ]},
+    { section:"Vestidos de Princesa", items:[
+      {id:"default-top", emoji:"👗", name:"Vestido rosa princesa", cost:0, slot:"top", dress:true},
+      {id:"cenicienta", emoji:"🩵", name:"Vestido Cenicienta", cost:800, slot:"top", dress:true},
+      {id:"bella", emoji:"💛", name:"Vestido de Bella", cost:750, slot:"top", dress:true},
+    ]},
+    { section:"Ropa Versátil (Aesthetic)", items:[
+      {id:"encaje", emoji:"👚", name:"Top de encaje blanco", cost:350, slot:"top"},
+      {id:"mezclilla", emoji:"🧥", name:"Chaqueta de mezclilla", cost:400, slot:"top"},
+      {id:"tablones", emoji:"🩱", name:"Falda de tablones", cost:350, slot:"bottom"},
+      {id:"momjeans", emoji:"👖", name:"Mom jeans", cost:400, slot:"bottom"},
+    ]},
+    { section:"Zapatos", items:[
+      {id:"cristal", emoji:"✨", name:"Zapatitos de cristal", cost:600, slot:"shoes"},
+      {id:"botas", emoji:"👢", name:"Botas de plataforma", cost:500, slot:"shoes"},
+      {id:"maryjane", emoji:"🥿", name:"Zapatos Mary Jane", cost:450, slot:"shoes"},
+      {id:"chunky", emoji:"👟", name:"Zapatillas chunky", cost:400, slot:"shoes"},
+    ]},
+    { section:"Familia y Amigos", items:[
+      {id:"luna", emoji:"🐾", name:"Luna, tu perrita salchicha", cost:500, slot:"pet"},
+      {id:"benji", emoji:"💑", name:"Benji (tu novio)", cost:900, slot:"accessory"},
+    ]},
+    { section:"Especial", items:[
+      {id:"cita", emoji:"☕", name:"Cita Especial 💖", cost:2000, slot:"special"},
+    ]},
+  ];
+  const ALL_ITEMS = STORE_CATALOG.flatMap(s=>s.items);
+
+  const LEVELS = [
+    {min:0, name:"Princesa Aprendiz"},
+    {min:300, name:"Princesa Real"},
+    {min:800, name:"Princesa Dorada"},
+    {min:1500, name:"Reina Suprema"},
+  ];
+
+  // ---------- Estado con ropa predeterminada equipada ----------
+  const STORAGE_KEY = "fer-magic-schedule-v3"; // se mantiene igual para no perder el progreso ya guardado
+  let state = {
+    points: 150,
+    owned: ["bow", "default-top"],
+    equipped: {accessory:"bow", top:"default-top", bottom:null, shoes:null, pet:null},
+    checkins: {},
+    processedPenalties: [],
+    reminders: [],
+    notified: {},
+    streakRewardsClaimed: []
+  };
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+    }catch(e){ console.warn("No se pudo leer el progreso guardado", e); }
+    if(!state.reminders) state.reminders = [];
+    if(!state.notified) state.notified = {};
+    if(!state.streakRewardsClaimed) state.streakRewardsClaimed = [];
+    // Migración: recordatorios guardados antes de que existiera el campo "done"
+    state.reminders.forEach(r=>{ if(typeof r.done === "undefined") r.done = false; });
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch(e){ console.warn("No se pudo guardar el progreso", e); }
+  }
+
+  // ---------- Utilidades de tiempo ----------
+  function toMinutes(hhmm){ const [h,m]=hhmm.split(":").map(Number); return h*60+m; }
+  function todayKey(d){ return d.toISOString().slice(0,10); }
+
+  function applyMissedPenalties(){
+    const now = new Date();
+    for(let back=1; back<=7; back++){
+      const d = new Date(now); d.setDate(d.getDate()-back);
+      const dow = d.getDay();
+      const classes = SCHEDULE[dow] || [];
+      const key = todayKey(d);
+      classes.forEach((c, idx)=>{
+        const id = key+"_"+idx;
+        if(!state.checkins[id] && !state.processedPenalties.includes(id)){
+          state.points = Math.max(0, state.points - 20);
+          state.processedPenalties.push(id);
+        }
+      });
+    }
+    saveState();
+  }
+
+  function getTodayClasses(){
+    const now = new Date();
+    return (SCHEDULE[now.getDay()] || []).map((c,idx)=>({...c, idx}));
+  }
+
+  function getRelevantClass(){
+    const now = new Date();
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const classes = getTodayClasses();
+    for(const c of classes){
+      const start = toMinutes(c.start), end = toMinutes(c.end);
+      if(nowMin >= start-60 && nowMin <= end){
+        return {c, key: todayKey(now)+"_"+c.idx, status:"current"};
+      }
+    }
+    const upcoming = classes.find(c => toMinutes(c.start) > nowMin);
+    if(upcoming){ return {c: upcoming, key: todayKey(now)+"_"+upcoming.idx, status:"upcoming"}; }
+    return null;
+  }
+
+  // ---------- Racha de Amor ----------
+  // Cuenta días consecutivos (hacia atrás, sin contar hoy) en que se cumplieron
+  // TODAS las clases con check-in y TODOS los recordatorios de ese día marcados como hechos.
+  // Los días sin clases ni recordatorios no cuentan ni rompen la racha (se saltan).
+  function computeStreak(){
+    let streak = 0;
+    const now = new Date();
+    for(let back=1; back<=60; back++){
+      const d = new Date(now); d.setDate(d.getDate()-back);
+      const dow = d.getDay();
+      const key = todayKey(d);
+      const classes = SCHEDULE[dow] || [];
+      const remindersDue = (state.reminders||[]).filter(r=>r.date===key);
+      if(classes.length===0 && remindersDue.length===0) continue;
+      const classesOk = classes.every((c,idx)=> !!state.checkins[key+"_"+idx]);
+      const remindersOk = remindersDue.every(r=> !!r.done);
+      if(classesOk && remindersOk){ streak++; } else { break; }
+    }
+    return streak;
+  }
+
+  function renderStreak(){
+    const streak = computeStreak();
+    document.getElementById("streakCount").textContent = "🔥 Racha: "+streak+(streak===1?" día":" días");
+    const milestone = streak >= STREAK_MILESTONE ? Math.floor(streak/STREAK_MILESTONE)*STREAK_MILESTONE : 0;
+    const claimBtn = document.getElementById("streakClaimBtn");
+    if(milestone > 0 && !state.streakRewardsClaimed.includes(milestone)){
+      claimBtn.style.display = "inline-flex";
+      claimBtn.dataset.milestone = milestone;
+    } else {
+      claimBtn.style.display = "none";
+    }
+  }
+
+  function setupStreakClaim(){
+    document.getElementById("streakClaimBtn").addEventListener("click", (e)=>{
+      const milestone = parseInt(e.currentTarget.dataset.milestone, 10);
+      if(!milestone || state.streakRewardsClaimed.includes(milestone)) return;
+      state.streakRewardsClaimed.push(milestone);
+      state.points += 150;
+      saveState(); renderStatus(); renderStreak();
+      document.getElementById("toast").textContent = STREAK_REWARD_MSG.replace("{n}", milestone);
+    });
+  }
+
+  // ---------- Regalo Secreto (carta desbloqueable) ----------
+  function computeTotalCheckins(){
+    return Object.keys(state.checkins).length;
+  }
+
+  function renderGift(){
+    const container = document.getElementById("giftContainer");
+    if(!container) return;
+    const total = computeTotalCheckins();
+    const unlocked = total >= SECRET_GIFT_THRESHOLD;
+    const pct = Math.min(100, Math.round((total/SECRET_GIFT_THRESHOLD)*100));
+
+    if(!unlocked){
+      container.innerHTML =
+        '<div class="gift-card">' +
+          '<div class="gift-emoji">🔒</div>' +
+          '<h3>Tu sorpresa aún duerme...</h3>' +
+          '<p style="font-size:13px; color:var(--ink-soft); margin:0;">Cada vez que marcas "¡LLEGUÉ!" se acerca un poco más. Cuando llegues a '+SECRET_GIFT_THRESHOLD+' asistencias, se abrirá algo especial para ti 💌</p>' +
+          '<div class="gift-progress-track"><div class="gift-progress-fill" style="width:'+pct+'%;"></div></div>' +
+          '<div class="gift-progress-label">'+total+' / '+SECRET_GIFT_THRESHOLD+' asistencias</div>' +
+        '</div>';
+    } else {
+      const paragraphs = SECRET_GIFT_LETTER.map(p=>'<p>'+p+'</p>').join("");
+      container.innerHTML =
+        '<div class="gift-card">' +
+          '<div class="gift-emoji">💌</div>' +
+          '<h3>'+SECRET_GIFT_TITLE+'</h3>' +
+          '<div class="gift-letter">' + paragraphs + '<div class="gift-signature">'+SECRET_GIFT_SIGNATURE+'</div></div>' +
+        '</div>';
+    }
+  }
+
+  // ---------- Estado de ánimo del avatar (tipo Tamagotchi) ----------
+  function computeMood(){
+    const now = new Date();
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const key = todayKey(now);
+    const todayClasses = getTodayClasses();
+    const missedToday = todayClasses.some(c=>{
+      const end = toMinutes(c.end);
+      return nowMin > end && !state.checkins[key+"_"+c.idx];
+    });
+    if(missedToday) return "sad";
+    if(currentRelevant && state.checkins[currentRelevant.key]) return "happy";
+    const hour = now.getHours();
+    if(hour >= 23 || hour < 7) return "sleepy";
+    return "neutral";
+  }
+
+  function renderMoodFx(){
+    const mood = computeMood();
+    const mouth = document.getElementById("moodMouth");
+    const fx = document.getElementById("moodFx");
+    if(!mouth || !fx) return;
+    fx.innerHTML = "";
+    if(mood === "happy"){
+      mouth.setAttribute("d", "M 91 67 Q 100 78 109 67");
+      fx.innerHTML =
+        '<text x="63" y="32" font-size="13" opacity="0.9">💕</text>' +
+        '<text x="130" y="24" font-size="11" opacity="0.85">✨</text>' +
+        '<text x="100" y="12" font-size="12" opacity="0.85" text-anchor="middle">💖</text>';
+    } else if(mood === "sad"){
+      mouth.setAttribute("d", "M 93 72 Q 100 66 107 72");
+      fx.innerHTML = '<path d="M 78 64 Q 75.5 70 78 75 Q 80.5 70 78 64 Z" fill="#6FB6FF" opacity="0.85"/>';
+    } else if(mood === "sleepy"){
+      mouth.setAttribute("d", "M 96 69 Q 100 71 104 69");
+      fx.innerHTML =
+        '<ellipse cx="86" cy="54" rx="4.4" ry="6" fill="#FEE0D2"/>' +
+        '<ellipse cx="114" cy="54" rx="4.4" ry="6" fill="#FEE0D2"/>' +
+        '<path d="M 81 54 Q 86 50 91 54" stroke="#2C1A1D" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+        '<path d="M 109 54 Q 114 50 119 54" stroke="#2C1A1D" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+        '<text x="132" y="22" font-size="11" fill="#A24A82" opacity="0.85">z Z z</text>';
+    } else {
+      mouth.setAttribute("d", "M 93 68 Q 100 73 107 68");
+    }
+  }
+
+  function renderGreeting(){
+    const h = new Date().getHours();
+    const msgs = h<12 ? MORNING_MSGS : h<19 ? AFTERNOON_MSGS : EVENING_MSGS;
+    document.getElementById("greetingSub").textContent = msgs[Math.floor(Math.random()*msgs.length)];
+  }
+
+  function renderStatus(){
+    document.getElementById("pointsValue").textContent = state.points;
+    let level = LEVELS[0];
+    for(const l of LEVELS){ if(state.points >= l.min) level = l; }
+    document.getElementById("levelBadge").textContent = "Nivel: "+level.name;
+  }
+
+  // RENDERIZADO DEL AVATAR SVG Y OUTFITS
+  function renderDoll(){
+    const topId = state.equipped.top || "default-top";
+    const bottomId = state.equipped.bottom;
+    const shoesId = state.equipped.shoes;
+    const accId = state.equipped.accessory;
+
+    // Elementos SVG
+    const svgTop = document.getElementById("svgTop");
+    const svgBottom = document.getElementById("svgBottom");
+    const svgShoes = document.getElementById("svgShoes");
+    const svgAcc = document.getElementById("svgAccessory");
+
+    // TOPS / VESTIDOS (coordenadas ajustadas al torso rediseñado: hombros y=96, cadera y=178-188)
+    if(topId === "cenicienta"){
+      svgTop.innerHTML = `<path d="M 66 96 Q 100 90 134 96 L 152 205 Q 100 216 48 205 Z" fill="#70C1B3"/><path d="M 82 96 Q 100 108 118 96 Z" fill="#FFFFFF"/><circle cx="100" cy="102" r="3.5" fill="#FFFFFF"/>`;
+    } else if(topId === "bella"){
+      svgTop.innerHTML = `<path d="M 66 96 Q 100 90 134 96 L 150 210 Q 100 220 50 210 Z" fill="#FFE066"/><path d="M 66 96 Q 100 118 134 96 Z" fill="#F4D35E" opacity="0.6"/>`;
+    } else if(topId === "encaje"){
+      svgTop.innerHTML = `<path d="M 72 96 L 128 96 L 124 148 L 76 148 Z" fill="#FFFFFF" stroke="#E0D6DC" stroke-width="1"/><path d="M 76 106 L 124 106" stroke="#E0D6DC" stroke-width="1"/>`;
+    } else if(topId === "mezclilla"){
+      svgTop.innerHTML = `<path d="M 68 94 L 132 94 L 134 152 L 66 152 Z" fill="#4EA8DE"/><line x1="100" y1="94" x2="100" y2="152" stroke="#2B6CB0" stroke-width="2"/>`;
+    } else if(topId === "poleron"){
+      svgTop.innerHTML = `<path d="M 64 92 L 136 92 L 132 168 L 68 168 Z" fill="#FFB3C6"/><circle cx="100" cy="124" r="8" fill="#FFFFFF"/><path d="M 97 122 Q 100 118 103 122 Z" fill="#FF1493"/>`;
+    } else { // default-top
+      svgTop.innerHTML = `<path d="M 68 96 Q 100 90 132 96 L 148 208 Q 100 220 52 208 Z" fill="#FF69B4"/><path d="M 78 96 L 83 118 L 117 118 L 122 96 Z" fill="#FF1493" opacity="0.4"/><circle cx="100" cy="108" r="4" fill="#FFD700"/>`;
+    }
+
+    // BOTTOMS (Solo si no es vestido)
+    const currentTop = ALL_ITEMS.find(i=>i.id===topId);
+    if(bottomId && currentTop && !currentTop.dress){
+      if(bottomId === "momjeans"){
+        svgBottom.innerHTML = `<path d="M 78 176 L 122 176 L 120 292 L 102 292 L 100 220 L 98 292 L 80 292 Z" fill="#4895EF"/>`;
+      } else if(bottomId === "tablones"){
+        svgBottom.innerHTML = `<path d="M 76 176 L 124 176 L 130 206 L 70 206 Z" fill="#FF4D6D"/>`;
+      }
+    } else {
+      svgBottom.innerHTML = "";
+    }
+
+    // SHOES (pies en y ≈ 291-305, alineados con el nuevo largo de piernas)
+    if(shoesId === "botas"){
+      svgShoes.innerHTML = `<rect x="79" y="255" width="18" height="42" rx="5" fill="#212529"/><rect x="103" y="255" width="18" height="42" rx="5" fill="#212529"/>`;
+    } else if(shoesId === "cristal"){
+      svgShoes.innerHTML = `<ellipse cx="88.5" cy="298" rx="11" ry="7" fill="#E0F7FA" opacity="0.85"/><ellipse cx="111.5" cy="298" rx="11" ry="7" fill="#E0F7FA" opacity="0.85"/><ellipse cx="88.5" cy="298" rx="11" ry="7" fill="none" stroke="#B8E4EA" stroke-width="1"/><ellipse cx="111.5" cy="298" rx="11" ry="7" fill="none" stroke="#B8E4EA" stroke-width="1"/>`;
+    } else if(shoesId === "maryjane"){
+      svgShoes.innerHTML = `<ellipse cx="88.5" cy="298" rx="11" ry="7" fill="#2B2D42"/><ellipse cx="111.5" cy="298" rx="11" ry="7" fill="#2B2D42"/><circle cx="88.5" cy="292" r="1.6" fill="#FFD700"/><circle cx="111.5" cy="292" r="1.6" fill="#FFD700"/>`;
+    } else { // Predeterminado / Chunky / Sanrio
+      svgShoes.innerHTML = `<ellipse cx="88.5" cy="298" rx="11" ry="7" fill="#FF1493"/><ellipse cx="111.5" cy="298" rx="11" ry="7" fill="#FF1493"/><rect x="81" y="291" width="15" height="4.5" rx="2.2" fill="#FFFFFF"/><rect x="104" y="291" width="15" height="4.5" rx="2.2" fill="#FFFFFF"/>`;
+    }
+
+    // ACCESORIOS
+    if(accId === "benji"){
+      // Benji: mini figura de tu novio, parado a su lado con un corazón
+      svgAcc.innerHTML = `<g>
+        <rect x="32" y="258" width="4.4" height="17.6" rx="2" fill="#3A3A4A"/>
+        <rect x="41.6" y="258" width="4.4" height="17.6" rx="2" fill="#3A3A4A"/>
+        <path d="M 27.2 237.2 Q 38 235.6 48.8 237.2 L 46.4 259.6 Q 38 262 29.6 259.6 Z" fill="#4A6FA5" stroke="#35507A" stroke-width="0.6"/>
+        <rect x="34.8" y="234" width="6.4" height="5.6" fill="#E7B08B"/>
+        <path d="M 27.2 238.4 Q 20 246.4 21.6 256.4" stroke="#E7B08B" stroke-width="4.4" fill="none" stroke-linecap="round"/>
+        <path d="M 48.8 238.4 Q 56.8 243.6 59.2 250.8" stroke="#E7B08B" stroke-width="4.4" fill="none" stroke-linecap="round"/>
+        <circle cx="38" cy="223.6" r="10.4" fill="#E7B08B" stroke="#C48F68" stroke-width="0.5"/>
+        <path d="M 27.2 224.4 Q 25.6 210.8 38 210 Q 50.4 210.8 49.2 224.4 Q 49.6 217.2 45.2 214.8 L 38 219.6 L 30.8 214.8 Q 26.4 217.2 27.2 224.4 Z" fill="#2B2229"/>
+        <path d="M 32 211.6 Q 31.2 215.6 32.8 218.8" stroke="#4A3A3A" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+        <path d="M 44 211.6 Q 44.8 215.6 43.2 218.8" stroke="#4A3A3A" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+        <circle cx="34.8" cy="224.4" r="1.04" fill="#2C1A1D"/>
+        <circle cx="41.2" cy="224.4" r="1.04" fill="#2C1A1D"/>
+        <path d="M 34.8 227.6 Q 38 229.2 41.2 227.6" stroke="#B5745A" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <text x="55" y="253" font-size="8">💙</text>
+      </g>`;
+    } else if(accId === "mochila"){
+      svgAcc.innerHTML = `<rect x="44" y="108" width="20" height="38" rx="7" fill="#3A0CA3"/><circle cx="54" cy="122" r="4" fill="#FF4D6D"/>`;
+    } else if(accId === "bow"){
+      svgAcc.innerHTML = `<path d="M 110 26 Q 118 18 126 26 Q 118 32 110 26 Z" fill="#FF1493"/><path d="M 126 26 Q 134 18 142 26 Q 134 32 126 26 Z" fill="#FF1493"/><circle cx="126" cy="26" r="3.3" fill="#FFD700"/>`;
+    } else {
+      svgAcc.innerHTML = "";
+    }
+
+    // MASCOTA (Luna, la perrita salchicha café)
+    const svgPet = document.getElementById("svgPet");
+    if(state.equipped.pet === "luna"){
+      svgPet.innerHTML = `<g>
+        <rect x="159.3" y="275.2" width="3.4" height="15.7" rx="1.7" fill="#6B3F1D"/>
+        <rect x="166.3" y="275.2" width="3.4" height="15.7" rx="1.7" fill="#6B3F1D"/>
+        <rect x="180.3" y="275.2" width="3.4" height="15.7" rx="1.7" fill="#6B3F1D"/>
+        <rect x="187.3" y="275.2" width="3.4" height="15.7" rx="1.7" fill="#6B3F1D"/>
+        <path d="M 193.8 265.4 Q 198.5 261.2 196.6 255" stroke="#6B3F1D" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="155.1" y="264" width="39.2" height="11.8" rx="5.9" fill="#A9744A" stroke="#6B3F1D" stroke-width="0.7"/>
+        <path d="M 159.3 255 Q 169.1 258.4 166.9 271 Q 163 273.8 160.2 269.6 Q 157.9 262.6 159.3 255 Z" fill="#6B3F1D"/>
+        <circle cx="155.1" cy="262.6" r="9" fill="#A9744A" stroke="#6B3F1D" stroke-width="0.7"/>
+        <ellipse cx="146.2" cy="265.4" rx="5.6" ry="4.2" fill="#C99566" stroke="#6B3F1D" stroke-width="0.6"/>
+        <circle cx="141.7" cy="264.8" r="1.7" fill="#2C1A1D"/>
+        <circle cx="151.8" cy="258.9" r="1.1" fill="#2C1A1D"/>
+        <circle cx="152" cy="258.4" r="0.4" fill="#FFFFFF"/>
+        <circle cx="148.7" cy="257.5" r="0.8" fill="#2C1A1D"/>
+        <circle cx="149" cy="257.1" r="0.3" fill="#FFFFFF"/>
+      </g>`;
+    } else if(svgPet){
+      svgPet.innerHTML = "";
+    }
+    const tagPet = document.getElementById("tagPet");
+    if(tagPet){
+      if(state.equipped.pet === "luna"){ tagPet.style.display = "inline-block"; tagPet.textContent = "🐾 Luna"; }
+      else { tagPet.style.display = "none"; }
+    }
+
+    // Actualiza los badges de texto
+    const itemAcc = ALL_ITEMS.find(i=>i.id===accId);
+    const itemTop = ALL_ITEMS.find(i=>i.id===topId);
+    const itemShoes = ALL_ITEMS.find(i=>i.id===shoesId);
+
+    document.getElementById("tagAcc").textContent = itemAcc ? itemAcc.emoji+" "+itemAcc.name : "Sin accesorio";
+    document.getElementById("tagTop").textContent = itemTop ? itemTop.emoji+" "+itemTop.name : "Vestido Básico";
+    document.getElementById("tagShoes").textContent = itemShoes ? itemShoes.emoji+" "+itemShoes.name : "👟 Zapatitos";
+  }
+
+  let currentRelevant = null;
+  function renderHome(){
+    const rel = getRelevantClass();
+    currentRelevant = rel;
+    const tag = document.getElementById("classTag");
+    const name = document.getElementById("className");
+    const meta = document.getElementById("classMeta");
+    const empty = document.getElementById("classEmpty");
+    const btn = document.getElementById("checkinBtn");
+
+    if(!rel){
+      tag.textContent = "Hoy";
+      name.textContent = "Sin más clases hoy";
+      meta.innerHTML = "";
+      empty.style.display = "block";
+      btn.disabled = true; btn.classList.remove("done");
+      btn.textContent = "Sin clases ahora 💗";
+      renderMoodFx();
+      return;
+    }
+    empty.style.display = "none";
+    tag.textContent = rel.status === "current" ? "Clase en curso" : "Próxima clase";
+    name.textContent = rel.c.name;
+    let chips = "🕐 "+rel.c.start+" – "+rel.c.end;
+    meta.innerHTML = "<span>"+chips+"</span>" + (rel.c.room ? "<span>📍 "+rel.c.room+"</span>" : "") + (rel.c.prof ? "<span>👩‍🏫 "+rel.c.prof+"</span>" : "");
+
+    const alreadyChecked = !!state.checkins[rel.key];
+    if(alreadyChecked){
+      btn.disabled = true; btn.classList.add("done");
+      btn.textContent = "¡Llegaste, mi amor! 💚";
+    } else {
+      btn.disabled = false; btn.classList.remove("done");
+      btn.textContent = "¡LLEGUÉ! 📍";
+    }
+    renderMoodFx();
+  }
+
+  function handleCheckin(){
+    if(!currentRelevant) return;
+    const rel = currentRelevant;
+    if(state.checkins[rel.key]) return;
+    const now = new Date();
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const start = toMinutes(rel.c.start);
+    const diff = nowMin - start;
+    let gained, msg;
+    if(diff <= 0){ gained = 50; msg = "¡Felicidades mi princesa! Llegaste a tiempo, +50 monedas. ¡Te amo mucho! 💖"; }
+    else if(diff <= 15){ gained = 10; msg = "Llegaste un poquito tarde pero llegaste, +10 monedas. ¡Siempre mejor que faltar! 🌸"; }
+    else { gained = 0; msg = "Llegaste más tarde de lo ideal, mi amor. Mañana lo hacemos mejor 💗"; }
+    state.points = Math.max(0, state.points + gained);
+    state.checkins[rel.key] = true;
+    saveState(); renderStatus(); renderHome(); renderStreak(); renderGift();
+    document.getElementById("toast").textContent = msg;
+  }
+
+  function renderWeek(){
+    const body = document.getElementById("weekBody");
+    body.innerHTML = "";
+    const todayDow = new Date().getDay();
+    for(let d=1; d<=5; d++){
+      SCHEDULE[d].forEach((c, idx)=>{
+        const tr = document.createElement("tr");
+        if(d===todayDow) tr.className = "today";
+        tr.innerHTML =
+          "<td>"+(idx===0 ? '<span class="sched-day">'+DAY_NAMES[d]+'</span>' : "")+"</td>"+
+          "<td>"+c.start+"–"+c.end+"</td>"+
+          "<td>"+c.name+(c.room?'<span class="sched-room">'+c.room+(c.prof?" · "+c.prof:"")+'</span>':"")+"</td>";
+        body.appendChild(tr);
+      });
+    }
+  }
+
+  function renderStore(){
+    const container = document.getElementById("storeContainer");
+    container.innerHTML = "";
+    STORE_CATALOG.forEach(section=>{
+      const wrap = document.createElement("div");
+      wrap.className = "store-section";
+      const grid = document.createElement("div");
+      grid.className = "store-grid";
+      section.items.forEach(item=>{
+        const owned = state.owned.includes(item.id);
+        const equipped = item.slot!=="special" && state.equipped[item.slot]===item.id;
+        const el = document.createElement("div");
+        el.className = "item" + (owned?" owned":"") + (item.slot==="special"?" special":"") + (equipped?" equipped":"");
+        let label = owned ? (equipped ? "Puesto ✓" : "Usar") : (item.cost+" 👑");
+        el.innerHTML = '<div class="emoji">'+item.emoji+'</div><p>'+item.name+'</p><button data-id="'+item.id+'">'+label+'</button>';
+        grid.appendChild(el);
+      });
+      wrap.innerHTML = "<h4>"+section.section+"</h4>";
+      wrap.appendChild(grid);
+      container.appendChild(wrap);
+    });
+    container.querySelectorAll("button").forEach(btn=>{
+      btn.addEventListener("click", ()=>handleItemClick(btn.getAttribute("data-id")));
+    });
+  }
+
+  function handleItemClick(id){
+    const item = ALL_ITEMS.find(i=>i.id===id);
+    if(!item) return;
+    const owned = state.owned.includes(id);
+    if(!owned){
+      if(item.slot !== "special" && state.points < item.cost){
+        document.getElementById("toast").textContent = "Te faltan monedas para esto, mi princesa 🥺";
+        return;
+      }
+      state.points -= item.cost;
+      if(item.slot === "special"){
+        document.getElementById("toast").textContent = "¡Canjeaste tu Cita Especial! Avísale a tu novio 💌";
+      } else {
+        state.owned.push(id);
+        state.equipped[item.slot] = id;
+        document.getElementById("toast").textContent = "¡Te ves hermosa con "+item.name+"! 💕";
+      }
+    } else if(item.slot !== "special"){
+      state.equipped[item.slot] = id;
+    }
+    saveState(); renderStatus(); renderDoll(); renderStore();
+  }
+
+  // ---------- Recordatorios personalizados ----------
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  function formatReminderDate(date, time){
+    try{
+      const d = new Date(date+"T"+time+":00");
+      const txt = d.toLocaleDateString("es-CL", {weekday:"short", day:"numeric", month:"short"});
+      return txt.charAt(0).toUpperCase()+txt.slice(1)+" · "+time;
+    }catch(e){ return date+" · "+time; }
+  }
+
+  function renderReminders(){
+    const list = document.getElementById("remindersList");
+    list.innerHTML = "";
+    const items = (state.reminders||[]).slice().sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+    if(items.length === 0){
+      list.innerHTML = '<p class="empty" style="margin:4px 0 0;">Sin recordatorios todavía, agrega el primero arriba 💗</p>';
+      return;
+    }
+    items.forEach(r=>{
+      const dt = new Date(r.date+"T"+(r.time||"00:00")+":00");
+      const isPast = dt.getTime() < Date.now();
+      const div = document.createElement("div");
+      div.className = "reminder-item" + (r.done ? " done" : "");
+      div.innerHTML =
+        '<button class="reminder-check" data-id="'+r.id+'" aria-label="Marcar hecho">'+(r.done?'✓':'')+'</button>' +
+        '<div class="reminder-info"><strong>'+escapeHtml(r.title)+'</strong><span>'+formatReminderDate(r.date, r.time)+'</span></div>' +
+        (isPast && !r.done ? '<span class="reminder-past">Pasado</span>' : '') +
+        '<button class="reminder-del" data-id="'+r.id+'" aria-label="Eliminar">✕</button>';
+      list.appendChild(div);
+    });
+    list.querySelectorAll(".reminder-del").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        state.reminders = (state.reminders||[]).filter(r=>r.id !== btn.getAttribute("data-id"));
+        saveState(); renderReminders(); renderStreak();
+      });
+    });
+    list.querySelectorAll(".reminder-check").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const r = (state.reminders||[]).find(r=>r.id === btn.getAttribute("data-id"));
+        if(r){ r.done = !r.done; saveState(); renderReminders(); renderStreak(); }
+      });
+    });
+  }
+
+  function setupReminderForm(){
+    document.getElementById("addReminderBtn").addEventListener("click", ()=>{
+      const titleEl = document.getElementById("remTitle");
+      const dateEl = document.getElementById("remDate");
+      const timeEl = document.getElementById("remTime");
+      const title = titleEl.value.trim();
+      const date = dateEl.value;
+      const time = timeEl.value;
+      const remToast = document.getElementById("remToast");
+      if(!title || !date || !time){
+        remToast.textContent = "Completa título, fecha y hora, mi amor 💗";
+        return;
+      }
+      state.reminders = state.reminders || [];
+      state.reminders.push({ id: "r"+Date.now(), title, date, time, done:false, notified:false });
+      saveState(); renderReminders(); scheduleAllNotifications();
+      titleEl.value = ""; dateEl.value = ""; timeEl.value = "";
+      remToast.textContent = "¡Recordatorio agregado! 💖";
+    });
+  }
+
+  // ---------- Notificaciones locales ----------
+  function supportsNotifications(){ return typeof window !== "undefined" && "Notification" in window; }
+
+  function updateNotifUI(){
+    const btn = document.getElementById("notifBtn");
+    const status = document.getElementById("notifStatus");
+    if(!supportsNotifications()){
+      btn.disabled = true; btn.textContent = "No disponible en este navegador";
+      status.textContent = "Este navegador no soporta notificaciones web. En iPhone necesitas Safari 16.4 o más nuevo, con la app agregada a la pantalla de inicio.";
+      return;
+    }
+    const perm = Notification.permission;
+    if(perm === "granted"){
+      btn.disabled = true; btn.textContent = "🔔 Notificaciones activadas";
+      status.textContent = "Listo — Fer recibirá avisos 1 hora y 5 minutos antes de cada clase, y a la hora exacta de cada recordatorio (mientras tenga la app abierta).";
+    } else if(perm === "denied"){
+      btn.disabled = true; btn.textContent = "🔕 Notificaciones bloqueadas";
+      status.textContent = "Quedaron bloqueadas. Para activarlas: Ajustes del iPhone → Safari (o Notificaciones) → busca esta app y permite los avisos.";
+    } else {
+      btn.disabled = false; btn.textContent = "🔔 Activar notificaciones";
+      status.textContent = "";
+    }
+  }
+
+  function requestNotifPermission(){
+    if(!supportsNotifications()){ updateNotifUI(); return; }
+    Notification.requestPermission().then(perm=>{
+      updateNotifUI();
+      if(perm === "granted"){
+        scheduleAllNotifications();
+        document.getElementById("toast").textContent = "¡Notificaciones activadas, princesa! 🔔";
+      }
+    }).catch(()=>{ updateNotifUI(); });
+  }
+
+  function fireNotification(title, body){
+    if(!supportsNotifications() || Notification.permission !== "granted") return;
+    try{
+      if(navigator.serviceWorker && navigator.serviceWorker.ready){
+        navigator.serviceWorker.ready.then(reg=>{
+          if(reg && reg.showNotification){ reg.showNotification(title, {body: body, tag: title}); }
+          else { new Notification(title, {body: body}); }
+        }).catch(()=>{ try{ new Notification(title, {body: body}); }catch(e){} });
+      } else {
+        new Notification(title, {body: body});
+      }
+    }catch(e){ console.warn("No se pudo mostrar la notificación", e); }
+  }
+
+  let scheduledTimers = [];
+  function clearScheduledTimers(){
+    scheduledTimers.forEach(id=>clearTimeout(id));
+    scheduledTimers = [];
+  }
+
+  // Solo agenda avisos dentro de las próximas 20 horas: un setTimeout mucho más largo
+  // no sobrevive si el teléfono se bloquea o Safari suspende la pestaña.
+  const MAX_SCHEDULE_MS = 20 * 60 * 60 * 1000;
+
+  function scheduleAt(date, title, body, key){
+    if(state.notified[key]) return;
+    const delay = date.getTime() - Date.now();
+    if(delay <= 0 || delay > MAX_SCHEDULE_MS) return;
+    const id = setTimeout(()=>{
+      fireNotification(title, body);
+      state.notified[key] = true;
+      saveState();
+    }, delay);
+    scheduledTimers.push(id);
+  }
+
+  function scheduleAllNotifications(){
+    if(!supportsNotifications() || Notification.permission !== "granted") return;
+    clearScheduledTimers();
+    const now = new Date();
+
+    // Clases de hoy
+    getTodayClasses().forEach(c=>{
+      const startMin = toMinutes(c.start);
+      const startDate = new Date(now);
+      startDate.setHours(Math.floor(startMin/60), startMin%60, 0, 0);
+      const oneHourBefore = new Date(startDate.getTime() - 60*60000);
+      const fiveMinBefore = new Date(startDate.getTime() - 5*60000);
+      const keyBase = todayKey(now)+"_"+c.idx;
+      scheduleAt(oneHourBefore, "¡Clase en 1 hora! 💕", pickMsg(HOUR_BEFORE_MSGS, c), keyBase+"_1h");
+      scheduleAt(fiveMinBefore, "¡Ya casi! Faltan 5 minutos ⏰", pickMsg(FIVE_MIN_MSGS, c), keyBase+"_5m");
+    });
+
+    // Recordatorios personalizados
+    (state.reminders||[]).forEach(r=>{
+      if(r.notified) return;
+      const dt = new Date(r.date+"T"+r.time+":00");
+      scheduleAt(dt, "Recordatorio 💌", r.title, "reminder_"+r.id);
+    });
+  }
+
+  function setupNotifButton(){
+    document.getElementById("notifBtn").addEventListener("click", requestNotifPermission);
+  }
+
+  // Intenta registrar un Service Worker externo (sw.js). Si este archivo se abre
+  // como HTML suelto o dentro de una vista previa sin hosting propio, el registro
+  // fallará silenciosamente y la app sigue funcionando igual — el Service Worker
+  // solo mejora el caché offline, las notificaciones en primer plano no dependen de él.
+  function registerServiceWorker(){
+    if(!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("sw.js").catch(()=>{ /* no disponible en este entorno, se ignora */ });
+  }
+
+  function setupTabs(){
+    document.querySelectorAll("nav.tabs button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+        document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("view-"+btn.getAttribute("data-tab")).classList.add("active");
+      });
+    });
+  }
+
+  function setupBackup(){
+    document.getElementById("genBackupBtn").addEventListener("click", ()=>{
+      const code = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+      document.getElementById("backupText").value = code;
+    });
+    document.getElementById("restoreBackupBtn").addEventListener("click", ()=>{
+      const code = document.getElementById("backupText").value.trim();
+      if(!code) return;
+      try{
+        const parsed = JSON.parse(decodeURIComponent(escape(atob(code))));
+        state = Object.assign({ points:150, owned:[], equipped:{}, checkins:{}, processedPenalties:[], reminders:[], notified:{}, streakRewardsClaimed:[] }, parsed);
+        if(!state.reminders) state.reminders = [];
+        if(!state.notified) state.notified = {};
+        if(!state.streakRewardsClaimed) state.streakRewardsClaimed = [];
+        saveState(); renderStatus(); renderDoll(); renderHome(); renderStore(); renderReminders(); renderStreak(); renderGift();
+        document.getElementById("toast").textContent = "¡Progreso restaurado, princesa! 💖";
+      }catch(e){
+        alert("Ese código no es válido.");
+      }
+    });
+  }
+
+  function init(){
+    loadState();
+    applyMissedPenalties();
+    renderGreeting();
+    renderStatus();
+    renderDoll();
+    renderHome();
+    renderWeek();
+    renderStore();
+    renderReminders();
+    renderStreak();
+    renderGift();
+    setupTabs();
+    setupBackup();
+    setupReminderForm();
+    setupNotifButton();
+    setupStreakClaim();
+    updateNotifUI();
+    registerServiceWorker();
+    document.getElementById("checkinBtn").addEventListener("click", handleCheckin);
+    document.getElementById("resetBtn").addEventListener("click", ()=>{
+      if(confirm("¿Reiniciar todo el progreso de Fer?")){
+        try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+        state = { points: 150, owned: ["bow", "default-top"], equipped: {accessory:"bow", top:"default-top", bottom:null, shoes:null, pet:null}, checkins: {}, processedPenalties: [], reminders: [], notified: {}, streakRewardsClaimed: [] };
+        clearScheduledTimers();
+        renderStatus(); renderDoll(); renderHome(); renderStore(); renderReminders(); renderStreak(); renderGift();
+      }
+    });
+
+    if(supportsNotifications() && Notification.permission === "granted"){
+      scheduleAllNotifications();
+    }
+    document.addEventListener("visibilitychange", ()=>{
+      if(!document.hidden){ scheduleAllNotifications(); }
+    });
+    setInterval(()=>{ renderHome(); scheduleAllNotifications(); }, 5*60000);
+  }
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
